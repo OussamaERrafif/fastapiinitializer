@@ -855,6 +855,226 @@
             flex: 1;
         }
 
+        /* History & Bookmarks */
+        .sidebar-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-section h3 {
+            margin-bottom: 0;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75em;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            color: var(--error);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .saved-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .saved-item:hover {
+            border-color: var(--border-color);
+            background: var(--bg-hover);
+        }
+
+        .saved-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .saved-item-name {
+            font-weight: 500;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .saved-item-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .saved-item:hover .saved-item-actions {
+            opacity: 1;
+        }
+
+        .saved-item-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .saved-item-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .saved-item-btn.delete:hover {
+            color: var(--error);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .saved-item-btn.bookmark:hover {
+            color: var(--warning);
+        }
+
+        .saved-item-btn.bookmark.active {
+            color: var(--warning);
+        }
+
+        .saved-item-meta {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .saved-item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        .empty-state svg {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            padding: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .bookmark-form {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            display: none;
+        }
+
+        .bookmark-form.active {
+            display: block;
+        }
+
+        .bookmark-form input {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 0.9em;
+        }
+
+        .bookmark-form input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .bookmark-form-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .bookmark-form-actions .btn {
+            flex: 1;
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .main-grid {
@@ -961,6 +1181,35 @@
                 <polyline points="7 10 12 15 17 10"/>
                 <line x1="12" y1="15" x2="12" y2="3"/>
             </symbol>
+            
+            <!-- Bookmark Icon -->
+            <symbol id="icon-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </symbol>
+            
+            <!-- Bookmark Filled Icon -->
+            <symbol id="icon-bookmark-filled" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </symbol>
+            
+            <!-- History Icon -->
+            <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+            </symbol>
+            
+            <!-- Trash Icon -->
+            <symbol id="icon-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </symbol>
+            
+            <!-- Load Icon -->
+            <symbol id="icon-load" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </symbol>
         </defs>
     </svg>
 
@@ -991,6 +1240,69 @@
                 </h3>
                 <div id="templates-container">
                     <!-- Populated dynamically -->
+                </div>
+
+                <!-- History & Bookmarks Section -->
+                <div class="sidebar-section">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="bookmarks">
+                            <svg class="icon-svg" style="width: 14px; height: 14px;">
+                                <use href="#icon-bookmark"/>
+                            </svg>
+                            Bookmarks
+                        </button>
+                        <button class="tab-btn" data-tab="history">
+                            <svg class="icon-svg" style="width: 14px; height: 14px;">
+                                <use href="#icon-history"/>
+                            </svg>
+                            History
+                        </button>
+                    </div>
+
+                    <!-- Bookmark Form -->
+                    <div class="bookmark-form" id="bookmark-form">
+                        <input type="text" id="bookmark-name" placeholder="Enter bookmark name..." maxlength="50">
+                        <div class="bookmark-form-actions">
+                            <button class="btn btn-secondary" id="cancel-bookmark">Cancel</button>
+                            <button class="btn btn-primary" id="save-bookmark">Save</button>
+                        </div>
+                    </div>
+
+                    <!-- Bookmarks Tab Content -->
+                    <div class="tab-content active" id="bookmarks-tab">
+                        <button class="btn btn-secondary" id="add-bookmark-btn" style="width: 100%; margin-bottom: 12px;">
+                            <svg class="icon-svg">
+                                <use href="#icon-plus"/>
+                            </svg>
+                            Save Current Config
+                        </button>
+                        <div id="bookmarks-container">
+                            <div class="empty-state">
+                                <svg>
+                                    <use href="#icon-bookmark"/>
+                                </svg>
+                                <p>No bookmarks yet</p>
+                                <p style="font-size: 0.8em;">Save your favorite configurations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Tab Content -->
+                    <div class="tab-content" id="history-tab">
+                        <div class="sidebar-section-header" style="margin-bottom: 12px;">
+                            <span style="font-size: 0.8em; color: var(--text-muted);">Recent generations</span>
+                            <button class="clear-btn" id="clear-history">Clear All</button>
+                        </div>
+                        <div id="history-container">
+                            <div class="empty-state">
+                                <svg>
+                                    <use href="#icon-history"/>
+                                </svg>
+                                <p>No history yet</p>
+                                <p style="font-size: 0.8em;">Generated projects will appear here</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </aside>
 
@@ -1261,7 +1573,7 @@
     </div>
 
     <footer class="footer">
-        <p>Built with FastAPI | <a href="/docs" target="_blank">API Documentation</a> | <a href="https://github.com" target="_blank">GitHub</a></p>
+        <p>Built with FastAPI | <a href="/docs" target="_blank">API Documentation</a> | <a href="https://github.com/OussamaERrafif/fastapiinitializer" target="_blank">GitHub</a></p>
     </footer>
 
     <!-- Monaco Editor Loader -->
@@ -1270,6 +1582,11 @@
         let monacoEditor = null;
         let allOptions = {};
         let selectedDependencies = new Set(['pytest', 'docker', 'logging']);
+        
+        // History and Bookmarks storage keys
+        const HISTORY_KEY = 'fastapi_generator_history';
+        const BOOKMARKS_KEY = 'fastapi_generator_bookmarks';
+        const MAX_HISTORY_ITEMS = 10;
         
         // Load available options
         async function loadOptions() {
@@ -2319,6 +2636,9 @@ def setup_middleware(app):
                     throw new Error(error.detail || 'Generation failed');
                 }
                 
+                // Add to history on successful generation
+                addToHistory(config);
+                
                 // Download the ZIP file
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
@@ -2347,9 +2667,388 @@ def setup_middleware(app):
                 }
             });
         });
+
+        // ==========================================
+        // HISTORY & BOOKMARKS FUNCTIONALITY
+        // ==========================================
+
+        // Get history from localStorage
+        function getHistory() {
+            try {
+                const history = localStorage.getItem(HISTORY_KEY);
+                return history ? JSON.parse(history) : [];
+            } catch (e) {
+                console.error('Error reading history:', e);
+                return [];
+            }
+        }
+
+        // Save history to localStorage
+        function saveHistory(history) {
+            try {
+                localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            } catch (e) {
+                console.error('Error saving history:', e);
+            }
+        }
+
+        // Add item to history
+        function addToHistory(config) {
+            const history = getHistory();
+            const historyItem = {
+                id: Date.now(),
+                config: config,
+                timestamp: new Date().toISOString(),
+                projectName: config.project_name
+            };
+            
+            // Add to beginning of array
+            history.unshift(historyItem);
+            
+            // Keep only MAX_HISTORY_ITEMS
+            if (history.length > MAX_HISTORY_ITEMS) {
+                history.pop();
+            }
+            
+            saveHistory(history);
+            renderHistory();
+        }
+
+        // Get bookmarks from localStorage
+        function getBookmarks() {
+            try {
+                const bookmarks = localStorage.getItem(BOOKMARKS_KEY);
+                return bookmarks ? JSON.parse(bookmarks) : [];
+            } catch (e) {
+                console.error('Error reading bookmarks:', e);
+                return [];
+            }
+        }
+
+        // Save bookmarks to localStorage
+        function saveBookmarks(bookmarks) {
+            try {
+                localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
+            } catch (e) {
+                console.error('Error saving bookmarks:', e);
+            }
+        }
+
+        // Add bookmark
+        function addBookmark(name, config) {
+            const bookmarks = getBookmarks();
+            const bookmark = {
+                id: Date.now(),
+                name: name,
+                config: config,
+                timestamp: new Date().toISOString()
+            };
+            
+            bookmarks.unshift(bookmark);
+            saveBookmarks(bookmarks);
+            renderBookmarks();
+        }
+
+        // Delete bookmark
+        function deleteBookmark(id) {
+            const bookmarks = getBookmarks();
+            const filtered = bookmarks.filter(b => b.id !== id);
+            saveBookmarks(filtered);
+            renderBookmarks();
+        }
+
+        // Delete history item
+        function deleteHistoryItem(id) {
+            const history = getHistory();
+            const filtered = history.filter(h => h.id !== id);
+            saveHistory(filtered);
+            renderHistory();
+        }
+
+        // Clear all history
+        function clearHistory() {
+            saveHistory([]);
+            renderHistory();
+        }
+
+        // Load a saved configuration
+        function loadConfig(config) {
+            // Set project name
+            document.getElementById('project_name').value = config.project_name || '';
+            document.getElementById('author').value = config.author || '';
+            document.getElementById('description').value = config.description || '';
+            document.getElementById('python_version').value = config.python_version || '3.11';
+            document.getElementById('license').value = config.license || 'MIT';
+            document.getElementById('structure').value = config.structure || 'standard';
+            document.getElementById('database').value = config.database || 'sqlite';
+            document.getElementById('ci_cd').value = config.ci_cd || 'github-actions';
+            
+            // Set checkboxes
+            document.getElementById('include_docker').checked = config.include_docker !== false;
+            document.getElementById('include_tests').checked = config.include_tests !== false;
+            document.getElementById('include_middleware').checked = config.include_middleware !== false;
+            document.getElementById('include_logging').checked = config.include_logging !== false;
+            
+            // Set template
+            if (config.template) {
+                const templateRadio = document.getElementById(`template_${config.template}`);
+                if (templateRadio) {
+                    templateRadio.checked = true;
+                    document.querySelectorAll('.template-card').forEach(el => el.classList.remove('active'));
+                    templateRadio.closest('.template-card')?.classList.add('active');
+                }
+            }
+            
+            // Set dependencies
+            selectedDependencies.clear();
+            if (config.dependencies && Array.isArray(config.dependencies)) {
+                config.dependencies.forEach(dep => selectedDependencies.add(dep));
+            }
+            updateSelectedDepsDisplay();
+            
+            // Scroll to top of form
+            document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Format timestamp for display
+        function formatTimestamp(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+            const diff = now - date;
+            
+            // Less than 1 minute
+            if (diff < 60000) {
+                return 'Just now';
+            }
+            // Less than 1 hour
+            if (diff < 3600000) {
+                const mins = Math.floor(diff / 60000);
+                return `${mins}m ago`;
+            }
+            // Less than 24 hours
+            if (diff < 86400000) {
+                const hours = Math.floor(diff / 3600000);
+                return `${hours}h ago`;
+            }
+            // Less than 7 days
+            if (diff < 604800000) {
+                const days = Math.floor(diff / 86400000);
+                return `${days}d ago`;
+            }
+            // Otherwise show date
+            return date.toLocaleDateString();
+        }
+
+        // Render history items
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            const history = getHistory();
+            
+            if (history.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg>
+                            <use href="#icon-history"/>
+                        </svg>
+                        <p>No history yet</p>
+                        <p style="font-size: 0.8em;">Generated projects will appear here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = history.map(item => `
+                <div class="saved-item" data-id="${item.id}">
+                    <div class="saved-item-header">
+                        <span class="saved-item-name">${escapeHtml(item.projectName || 'Unnamed')}</span>
+                        <div class="saved-item-actions">
+                            <button class="saved-item-btn bookmark" title="Save as bookmark" data-action="bookmark">
+                                <svg class="icon-svg" style="width: 14px; height: 14px;">
+                                    <use href="#icon-bookmark"/>
+                                </svg>
+                            </button>
+                            <button class="saved-item-btn delete" title="Delete" data-action="delete">
+                                <svg class="icon-svg" style="width: 14px; height: 14px;">
+                                    <use href="#icon-trash"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="saved-item-meta">
+                        <span>${item.config.structure || 'standard'}</span>
+                        <span>•</span>
+                        <span>${formatTimestamp(item.timestamp)}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click handlers
+            container.querySelectorAll('.saved-item').forEach(item => {
+                const id = parseInt(item.dataset.id);
+                const historyItem = history.find(h => h.id === id);
+                
+                // Load on click (but not on button click)
+                item.addEventListener('click', (e) => {
+                    if (!e.target.closest('.saved-item-btn')) {
+                        loadConfig(historyItem.config);
+                    }
+                });
+                
+                // Delete button
+                item.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteHistoryItem(id);
+                });
+                
+                // Bookmark button
+                item.querySelector('[data-action="bookmark"]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const name = historyItem.projectName || 'Saved Config';
+                    addBookmark(name, historyItem.config);
+                    showBookmarkTab();
+                });
+            });
+        }
+
+        // Render bookmarks
+        function renderBookmarks() {
+            const container = document.getElementById('bookmarks-container');
+            const bookmarks = getBookmarks();
+            
+            if (bookmarks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg>
+                            <use href="#icon-bookmark"/>
+                        </svg>
+                        <p>No bookmarks yet</p>
+                        <p style="font-size: 0.8em;">Save your favorite configurations</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = bookmarks.map(bookmark => `
+                <div class="saved-item" data-id="${bookmark.id}">
+                    <div class="saved-item-header">
+                        <span class="saved-item-name">
+                            <svg class="icon-svg" style="width: 12px; height: 12px; color: var(--warning); margin-right: 4px;">
+                                <use href="#icon-bookmark-filled"/>
+                            </svg>
+                            ${escapeHtml(bookmark.name)}
+                        </span>
+                        <div class="saved-item-actions">
+                            <button class="saved-item-btn delete" title="Delete" data-action="delete">
+                                <svg class="icon-svg" style="width: 14px; height: 14px;">
+                                    <use href="#icon-trash"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="saved-item-meta">
+                        <span>${bookmark.config.project_name || 'unnamed'}</span>
+                        <span>•</span>
+                        <span>${bookmark.config.structure || 'standard'}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click handlers
+            container.querySelectorAll('.saved-item').forEach(item => {
+                const id = parseInt(item.dataset.id);
+                const bookmark = bookmarks.find(b => b.id === id);
+                
+                // Load on click (but not on button click)
+                item.addEventListener('click', (e) => {
+                    if (!e.target.closest('.saved-item-btn')) {
+                        loadConfig(bookmark.config);
+                    }
+                });
+                
+                // Delete button
+                item.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteBookmark(id);
+                });
+            });
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update active tab content
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById(`${tab}-tab`).classList.add('active');
+            });
+        });
+
+        // Show bookmark tab
+        function showBookmarkTab() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('[data-tab="bookmarks"]').classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('bookmarks-tab').classList.add('active');
+        }
+
+        // Add bookmark button
+        document.getElementById('add-bookmark-btn').addEventListener('click', () => {
+            const form = document.getElementById('bookmark-form');
+            const input = document.getElementById('bookmark-name');
+            const config = getFormConfig();
+            
+            form.classList.add('active');
+            input.value = config.project_name || 'My Config';
+            input.focus();
+            input.select();
+        });
+
+        // Cancel bookmark
+        document.getElementById('cancel-bookmark').addEventListener('click', () => {
+            document.getElementById('bookmark-form').classList.remove('active');
+        });
+
+        // Save bookmark
+        document.getElementById('save-bookmark').addEventListener('click', () => {
+            const name = document.getElementById('bookmark-name').value.trim();
+            if (name) {
+                const config = getFormConfig();
+                addBookmark(name, config);
+                document.getElementById('bookmark-form').classList.remove('active');
+            }
+        });
+
+        // Save bookmark on Enter key
+        document.getElementById('bookmark-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('save-bookmark').click();
+            } else if (e.key === 'Escape') {
+                document.getElementById('bookmark-form').classList.remove('active');
+            }
+        });
+
+        // Clear history button
+        document.getElementById('clear-history').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all history?')) {
+                clearHistory();
+            }
+        });
+
+        // Initialize history and bookmarks on page load
+        function initHistoryAndBookmarks() {
+            renderHistory();
+            renderBookmarks();
+        }
         
         // Load options on page load
         loadOptions();
+        initHistoryAndBookmarks();
     </script>
 </body>
 </html>
