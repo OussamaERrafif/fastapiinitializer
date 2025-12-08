@@ -1,3 +1,16 @@
+[project]
+name = "fastapiinitializer"
+version = "1.0.0"
+description = "FastAPI Project Generator - Like Spring Initializr but for FastAPI"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.0.0",
+    "jinja2>=3.1.0",
+    "python-multipart>=0.0.6",
+]
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = [
