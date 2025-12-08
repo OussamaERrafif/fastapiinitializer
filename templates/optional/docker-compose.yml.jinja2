@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      {% if has_database %}
+      - DATABASE_URL=${DATABASE_URL}
+      {% endif %}
+      {% if has_jwt %}
+      - SECRET_KEY=${SECRET_KEY}
+      {% endif %}
+    {% if has_database or has_redis or has_celery %}
+    depends_on:
+      {% if database == "postgresql" %}
+      - postgres
+      {% elif database == "mysql" %}
+      - mysql
+      {% endif %}
+      {% if has_redis or has_celery %}
+      - redis
+      {% endif %}
+    {% endif %}
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  {% if database == "postgresql" %}
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB={{ project_name }}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  {% elif database == "mysql" %}
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE={{ project_name }}
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+  {% elif database == "mongodb" %}
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  {% endif %}
+
+  {% if has_redis or has_celery %}
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+  {% endif %}
+
+  {% if has_celery %}
+  celery_worker:
+    build: .
+    command: celery -A app.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - .:/app
+  {% endif %}
+
+volumes:
+  {% if database == "postgresql" %}
+  postgres_data:
+  {% elif database == "mysql" %}
+  mysql_data:
+  {% elif database == "mongodb" %}
+  mongo_data:
+  {% endif %}
+  {% if has_redis or has_celery %}
+  redis_data:
+  {% endif %}

@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPIInitializer - Professional</title>
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <!-- Monaco Editor -->
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/editor/editor.main.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --bg-hover: #333333;
+            --border-color: #404040;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #707070;
+            --accent-primary: #4a9eff;
+            --accent-hover: #3a8eef;
+            --success: #4ade80;
+            --error: #f87171;
+            --warning: #fbbf24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 30px 40px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+        }
+
+        .header .version {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-left: 10px;
+            color: var(--accent-primary);
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .sidebar h3 {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .template-card {
+            padding: 16px;
+            margin-bottom: 12px;
+            background: var(--bg-tertiary);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .template-card:hover {
+            border-color: var(--border-color);
+            background: var(--bg-hover);
+        }
+
+        .template-card.active {
+            border-color: var(--accent-primary);
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .template-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .template-card .template-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .template-card .template-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-hover);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .template-card .template-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-secondary);
+        }
+
+        .template-card.active .template-icon {
+            background: var(--accent-primary);
+        }
+
+        .template-card.active .template-icon svg {
+            fill: white;
+        }
+
+        .template-card .template-name {
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .template-card .template-description {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-badge {
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+        }
+
+        .btn-icon {
+            font-size: 1.1em;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.95em;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-secondary);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Dependencies Section */
+        .dependencies-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .selected-deps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 40px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .dep-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(74, 158, 255, 0.15);
+            border: 1px solid var(--accent-primary);
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--accent-primary);
+        }
+
+        .dep-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+
+        .dep-tag .remove:hover {
+            opacity: 1;
+        }
+
+        .empty-deps {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        /* Switches */
+        .switch-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .switch-label {
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--bg-hover);
+            transition: 0.3s;
+            border-radius: 26px;
+            border: 1px solid var(--border-color);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+            background-color: white;
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .generate-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            animation: fadeIn 0.2s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-width: 1400px;
+            max-height: 90vh;
+            width: 95%;
+            overflow: hidden;
+            animation: slideUp 0.3s;
+        }
+
+        .modal-content.preview-modal {
+            max-width: 1600px;
+            max-height: 95vh;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5em;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: calc(80vh - 140px);
+            overflow-y: auto;
+        }
+
+        .modal-body.preview-body {
+            padding: 0;
+            max-height: calc(95vh - 140px);
+            overflow: hidden;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Dependencies Modal */
+        .dep-category {
+            margin-bottom: 24px;
+        }
+
+        .dep-category-title {
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .dep-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .dep-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dep-item:hover {
+            border-color: var(--border-color);
+            background: var(--bg-hover);
+        }
+
+        .dep-item.selected {
+            border-color: var(--accent-primary);
+            background: rgba(74, 158, 255, 0.1);
+        }
+
+        .dep-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent-primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .dep-item-content {
+            flex: 1;
+        }
+
+        .dep-item-name {
+            font-weight: 500;
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .dep-item-desc {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Preview Modal */
+        .preview-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 0;
+            height: calc(95vh - 140px);
+            background: var(--bg-primary);
+        }
+
+        .file-tree-container {
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .file-tree {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .file-tree-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .file-tree-item.file:hover {
+            background: var(--bg-hover);
+        }
+
+        .file-tree-item.file.active {
+            background: rgba(74, 158, 255, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .file-tree-item.folder {
+            cursor: default;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .file-tree-icon {
+            font-size: 1em;
+        }
+
+        .folder-icon {
+            font-size: 1em;
+        }
+
+        .file-content-container {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #1e1e1e;
+        }
+
+        .file-content-header {
+            padding: 10px 16px;
+            background: #252526;
+            border-bottom: 1px solid #3e3e42;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 35px;
+        }
+
+        .file-content-title {
+            font-weight: 400;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #cccccc;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+        }
+
+        .file-content-body {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .file-content-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #858585;
+            font-size: 0.95em;
+            text-align: center;
+            padding: 40px;
+            background: #1e1e1e;
+        }
+
+        #editor-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #editor-container.active {
+            display: block;
+        }
+
+        .code-block {
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .line-numbers {
+            display: table;
+            width: 100%;
+        }
+
+        .code-line {
+            display: table-row;
+        }
+
+        .line-number {
+            display: table-cell;
+            padding-right: 16px;
+            color: var(--text-muted);
+            user-select: none;
+            text-align: right;
+            min-width: 40px;
+        }
+
+        .line-content {
+            display: table-cell;
+            padding-left: 16px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        /* Syntax highlighting hints */
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: var(--text-muted); font-style: italic; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading & Messages */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .error {
+            background-color: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+
+        .footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-new {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--success);
+        }
+
+        /* SVG Icons */
+        .icon-svg {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .icon-svg-lg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .icon-svg-folder {
+            width: 16px;
+            height: 16px;
+            fill: var(--warning);
+        }
+
+        .icon-svg-file {
+            width: 16px;
+            height: 16px;
+            fill: var(--accent-primary);
+        }
+
+        /* Action Buttons Row */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .dep-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Icon Definitions -->
+    <svg style="display: none;">
+        <defs>
+            <!-- FastAPI Logo Icon -->
+            <symbol id="icon-fastapi" viewBox="0 0 128 128">
+                <path d="M56.813 127.586c-1.903-.227-3.899-.52-4.434-.652a48.078 48.078 0 00-2.375-.5 36.042 36.042 0 01-2.703-.633c-4.145-1.188-4.442-1.285-7.567-2.563-2.875-1.172-8.172-3.91-9.984-5.156-.496-.344-.96-.621-1.031-.621-.07 0-1.23-.816-2.578-1.813-8.57-6.343-15.004-14.043-19.653-23.527-.8-1.629-1.453-3.074-1.453-3.21 0-.134-.144-.505-.32-.817-.363-.649-.88-2.047-1.297-3.492a20.047 20.047 0 00-.625-1.813c-.195-.46-.352-1.02-.352-1.246 0-.227-.195-.965-.433-1.645-.238-.675-.43-1.472-.43-1.77 0-.296-.187-1.32-.418-2.276C.598 73.492 0 67.379 0 63.953c0-3.422.598-9.535 1.16-11.894.23-.957.418-2 .418-2.32 0-.321.145-.95.32-1.4.18-.448.41-1.253.516-1.788.11-.535.36-1.457.563-2.055l.59-1.726c.433-1.293.835-2.387 1.027-2.813.11-.238.539-1.21.957-2.16.676-1.535 2.125-4.43 2.972-5.945.309-.555.426-.739 2.098-3.352 2.649-4.148 7.176-9.309 11.39-12.988 1.485-1.297 6.446-5.063 6.669-5.063.062 0 .53-.281 1.043-.625 1.347-.902 2.668-1.668 4.39-2.531a53.06 53.06 0 001.836-.953c.285-.164.82-.41 3.567-1.64.605-.27 1.257-.516 3.136-1.173.414-.144 1.246-.449 1.84-.672.598-.222 1.301-.406 1.563-.406.258 0 .937-.18 1.508-.402.57-.223 1.605-.477 2.304-.563.696-.082 1.621-.277 2.055-.43.43-.148 1.61-.34 2.621-.425a72.572 72.572 0 003.941-.465c2.688-.394 8.532-.394 11.192 0a75.02 75.02 0 003.781.445c.953.079 2.168.278 2.703.442.535.16 1.461.36 2.055.433.594.079 1.594.325 2.222.551.63.23 1.344.414 1.59.414s.754.137 1.125.309c.375.168 1.168.449 1.766.625.594.18 1.613.535 2.27.797.652.261 1.527.605 1.945.761.77.29 6.46 3.137 7.234 3.622 6.281 3.917 9.512 6.476 13.856 10.964 5.238 5.414 8.715 10.57 12.254 18.16.25.536.632 1.329.851 1.758.215.434.395.942.395 1.13 0 .19.18.76.402 1.269.602 1.383 1.117 2.957 1.36 4.16.12.59.343 1.32.495 1.621.153.3.332 1.063.403 1.688.07.624.277 1.648.453 2.269 1.02 3.531 1.527 13.934.91 18.535-.183 1.367-.39 3.02-.46 3.672-.118 1.117-.708 4.004-1.212 5.945l-.52 2.055c-.98 3.957-3.402 9.594-6.359 14.809-1.172 2.07-5.101 7.668-5.843 8.324-.067.058-.399.45-.735.863-.336.418-1.414 1.586-2.39 2.594-4.301 4.441-7.77 7.187-13.86 10.969-.722.449-6.847 3.441-7.992 3.906-.594.238-1.586.64-2.203.89-.613.247-1.297.454-1.512.458-.215.003-.781.195-1.258.425-.476.23-1.082.422-1.351.426-.266.004-1.043.192-1.727.418-.683.23-1.633.477-2.11.55-.476.075-1.495.278-2.269.45-.773.172-3.11.508-5.187.746a59.06 59.06 0 01-13.945-.031zm4.703-12.5c.3-.234.609-.7.691-1.027.18-.723 29.234-58.97 29.781-59.7.461-.617.504-1.605.082-1.953-.222-.187-3.004-.246-10.43-.234-5.57.012-10.253.016-10.406.012-.226-.008-.273-3.73-.25-19.672.016-10.817-.035-19.766-.113-19.89-.078-.126-.383-.227-.68-.227-.418 0-.613.18-.87.808-.485 1.168-1.825 3.82-8.348 16.485a3554.569 3554.569 0 00-4.055 7.89c-1.156 2.262-2.98 5.813-4.047 7.89a8751.248 8751.248 0 00-8.598 16.759c-4.933 9.636-5.53 10.785-5.742 11.039-.41.496-.633 1.64-.402 2.07.21.394.629.41 11.043.394 5.953-.007 10.863.024 10.914.07.137.141.086 37.31-.055 38.196-.093.582-.031.89.235 1.156.46.461.586.457 1.25-.066zm0 0" fill="#049688"/>
+            </symbol>
+            
+            <!-- Lightning Icon -->
+            <symbol id="icon-lightning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+            </symbol>
+            
+            <!-- Folder Icon -->
+            <symbol id="icon-folder" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+            </symbol>
+            
+            <!-- File Icon -->
+            <symbol id="icon-file" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+            </symbol>
+            
+            <!-- Document Icon -->
+            <symbol id="icon-document" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+            </symbol>
+            
+            <!-- Wrench Icon -->
+            <symbol id="icon-wrench" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>
+            </symbol>
+            
+            <!-- Building Icon -->
+            <symbol id="icon-building" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/>
+            </symbol>
+            
+            <!-- Gateway Icon -->
+            <symbol id="icon-gateway" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </symbol>
+            
+            <!-- Plus Icon -->
+            <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </symbol>
+            
+            <!-- Eye Icon -->
+            <symbol id="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+            </symbol>
+            
+            <!-- Check Icon -->
+            <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+            </symbol>
+            
+            <!-- Package Icon -->
+            <symbol id="icon-package" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </symbol>
+            
+            <!-- Close Icon -->
+            <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </symbol>
+            
+            <!-- Download Icon -->
+            <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <div class="header">
+        <div class="container">
+            <h1>
+                <svg class="icon-svg-lg" style="margin-right: 8px; vertical-align: middle;">
+                    <use href="#icon-fastapi"/>
+                </svg>
+                FastAPIInitializer 
+                <span class="version">v1</span>
+            </h1>
+            <p>Professional FastAPI project scaffolding with enterprise features</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="error-message" class="error" style="display: none;"></div>
+
+        <div class="main-grid">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <h3>
+                    <svg class="icon-svg" style="margin-right: 6px;">
+                        <use href="#icon-folder"/>
+                    </svg>
+                    Project Templates
+                </h3>
+                <div id="templates-container">
+                    <!-- Populated dynamically -->
+                </div>
+            </aside>
+
+            <!-- Main Form -->
+            <main class="form-container">
+                <form id="generator-form">
+                    <!-- Basic Info -->
+                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Basic Information</h2>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="project_name">Project Name *</label>
+                                <input 
+                                    type="text" 
+                                    id="project_name" 
+                                    name="project_name" 
+                                    placeholder="my_awesome_api"
+                                    required
+                                    pattern="[a-zA-Z0-9_-]+"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="author">Author</label>
+                                <input 
+                                    type="text" 
+                                    id="author" 
+                                    name="author" 
+                                    placeholder="Your name"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                placeholder="A brief description of your project"
+                            ></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="python_version">Python Version</label>
+                                <select id="python_version" name="python_version">
+                                    <option value="3.12">Python 3.12</option>
+                                    <option value="3.11" selected>Python 3.11</option>
+                                    <option value="3.10">Python 3.10</option>
+                                    <option value="3.9">Python 3.9</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="license">License</label>
+                                <select id="license" name="license">
+                                    <option value="MIT">MIT</option>
+                                    <option value="Apache-2.0">Apache 2.0</option>
+                                    <option value="GPL-3.0">GPL 3.0</option>
+                                    <option value="BSD-3-Clause">BSD 3-Clause</option>
+                                    <option value="Proprietary">Proprietary</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Architecture -->
+                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Architecture</h2>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="structure">Project Structure</label>
+                                <select id="structure" name="structure">
+                                    <option value="minimal">Minimal - Quick prototypes</option>
+                                    <option value="standard" selected>Standard - Production ready</option>
+                                    <option value="modular">Modular - Enterprise scale</option>
+                                    <option value="microservice">Microservice - Cloud native</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="database">Database</label>
+                                <select id="database" name="database">
+                                    <option value="none">None</option>
+                                    <option value="postgresql">PostgreSQL</option>
+                                    <option value="mysql">MySQL</option>
+                                    <option value="sqlite" selected>SQLite</option>
+                                    <option value="mongodb">MongoDB</option>
+                                    <option value="redis">Redis (KV Store)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ci_cd">CI/CD Pipeline</label>
+                            <select id="ci_cd" name="ci_cd">
+                                <option value="none">None</option>
+                                <option value="github-actions" selected>GitHub Actions</option>
+                                <option value="gitlab-ci">GitLab CI</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <!-- Dependencies -->
+                    <section class="section">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Dependencies</h2>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="add-deps-btn">
+                                <svg class="icon-svg">
+                                    <use href="#icon-plus"/>
+                                </svg>
+                                Add Dependencies
+                            </button>
+                        </div>
+                        
+                        <div class="selected-deps" id="selected-deps">
+                            <span class="empty-deps">No dependencies selected. Click "+ Add Dependencies" to select.</span>
+                        </div>
+                    </section>
+
+                    <!-- Options -->
+                    <section class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Additional Options</h2>
+                        </div>
+
+                        <div class="switch-group">
+                            <label class="switch-label" for="include_docker">Docker Configuration</label>
+                            <label class="switch">
+                                <input type="checkbox" id="include_docker" name="include_docker" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-group">
+                            <label class="switch-label" for="include_tests">Test Suite (Pytest)</label>
+                            <label class="switch">
+                                <input type="checkbox" id="include_tests" name="include_tests" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-group">
+                            <label class="switch-label" for="include_middleware">Middleware Layer <span class="badge badge-new">NEW</span></label>
+                            <label class="switch">
+                                <input type="checkbox" id="include_middleware" name="include_middleware" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="switch-group">
+                            <label class="switch-label" for="include_logging">Structured Logging <span class="badge badge-new">NEW</span></label>
+                            <label class="switch">
+                                <input type="checkbox" id="include_logging" name="include_logging" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-secondary" id="preview-btn">
+                            <svg class="icon-svg">
+                                <use href="#icon-eye"/>
+                            </svg>
+                            Preview Structure
+                        </button>
+                        <button type="submit" class="generate-btn" id="generate-btn">
+                            <svg class="icon-svg">
+                                <use href="#icon-download"/>
+                            </svg>
+                            Generate Project
+                        </button>
+                    </div>
+                </form>
+
+                <div id="loading" class="loading" style="display: none;">
+                    Generating your FastAPI project
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Dependencies Modal -->
+    <div id="deps-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <svg class="icon-svg" style="margin-right: 8px;">
+                        <use href="#icon-package"/>
+                    </svg>
+                    Select Dependencies
+                </h2>
+                <button class="modal-close" id="close-deps-modal">
+                    <svg class="icon-svg">
+                        <use href="#icon-close"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="deps-modal-body">
+                <!-- Populated dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-deps">Cancel</button>
+                <button class="btn btn-primary" id="save-deps">
+                    <svg class="icon-svg">
+                        <use href="#icon-check"/>
+                    </svg>
+                    Apply Selection
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content preview-modal">
+            <div class="modal-header">
+                <h2>
+                    <svg class="icon-svg" style="margin-right: 8px;">
+                        <use href="#icon-folder"/>
+                    </svg>
+                    Project Structure Preview
+                </h2>
+                <button class="modal-close" id="close-preview-modal">
+                    <svg class="icon-svg">
+                        <use href="#icon-close"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body preview-body" id="preview-modal-body">
+                <div class="preview-layout">
+                    <div class="file-tree-container">
+                        <div class="file-tree" id="file-tree">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="file-content-container">
+                        <div class="file-content-header" style="display: none;" id="file-content-header">
+                            <div class="file-content-title">
+                                <span id="current-file-name">No file selected</span>
+                            </div>
+                        </div>
+                        <div class="file-content-body">
+                            <div class="file-content-empty" id="file-content-empty">
+                                <svg class="icon-svg-lg" style="margin-right: 8px;">
+                                    <use href="#icon-eye"/>
+                                </svg>
+                                Click on a file to view its content
+                            </div>
+                            <div id="editor-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-preview">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Built with FastAPI | <a href="/docs" target="_blank">API Documentation</a> | <a href="https://github.com" target="_blank">GitHub</a></p>
+    </footer>
+
+    <!-- Monaco Editor Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+    <script>
+        let monacoEditor = null;
+        let allOptions = {};
+        let selectedDependencies = new Set(['pytest', 'docker', 'logging']);
+        
+        // Load available options
+        async function loadOptions() {
+            try {
+                const response = await fetch('/api/options');
+                allOptions = await response.json();
+                
+                // Populate templates
+                populateTemplates();
+                
+                // Update selected deps display
+                updateSelectedDepsDisplay();
+                
+                // Initialize Monaco Editor
+                initMonaco();
+                
+            } catch (error) {
+                console.error('Error loading options:', error);
+            }
+        }
+
+        function initMonaco() {
+            require.config({ 
+                paths: { 
+                    'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' 
+                } 
+            });
+            
+            require(['vs/editor/editor.main'], function() {
+                // Monaco is loaded and ready
+                console.log('Monaco Editor loaded');
+            });
+        }
+
+        function populateTemplates() {
+            const container = document.getElementById('templates-container');
+            
+            const iconMap = {
+                'blank': 'document',
+                'crud': 'document',
+                'microservice': 'wrench',
+                'monolith': 'building',
+                'api-gateway': 'gateway'
+            };
+            
+            allOptions.templates.forEach((template, index) => {
+                const card = document.createElement('div');
+                card.className = 'template-card';
+                if (index === 0) card.classList.add('active');
+                
+                const iconId = iconMap[template.id] || 'document';
+                
+                card.innerHTML = `
+                    <input type="radio" id="template_${template.id}" name="template" value="${template.id}" ${index === 0 ? 'checked' : ''}>
+                    <div class="template-header">
+                        <div class="template-icon">
+                            <svg class="icon-svg">
+                                <use href="#icon-${iconId}"/>
+                            </svg>
+                        </div>
+                        <div class="template-name">${template.name}</div>
+                    </div>
+                    <div class="template-description">${template.description}</div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.template-card').forEach(el => el.classList.remove('active'));
+                    card.classList.add('active');
+                    document.getElementById(`template_${template.id}`).checked = true;
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Dependencies Modal
+        document.getElementById('add-deps-btn').addEventListener('click', () => {
+            populateDepsModal();
+            document.getElementById('deps-modal').classList.add('active');
+        });
+
+        document.getElementById('close-deps-modal').addEventListener('click', closeDepsModal);
+        document.getElementById('cancel-deps').addEventListener('click', closeDepsModal);
+        
+        function closeDepsModal() {
+            document.getElementById('deps-modal').classList.remove('active');
+        }
+
+        document.getElementById('save-deps').addEventListener('click', () => {
+            updateSelectedDepsDisplay();
+            closeDepsModal();
+        });
+
+        function populateDepsModal() {
+            const container = document.getElementById('deps-modal-body');
+            container.innerHTML = '';
+            
+            // Group by category
+            const categories = {};
+            allOptions.dependencies.forEach(dep => {
+                if (!categories[dep.category]) {
+                    categories[dep.category] = [];
+                }
+                categories[dep.category].push(dep);
+            });
+            
+            // Create sections
+            Object.keys(categories).forEach(category => {
+                const section = document.createElement('div');
+                section.className = 'dep-category';
+                
+                const title = document.createElement('div');
+                title.className = 'dep-category-title';
+                title.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                section.appendChild(title);
+                
+                const grid = document.createElement('div');
+                grid.className = 'dep-grid';
+                
+                categories[category].forEach(dep => {
+                    const item = document.createElement('div');
+                    item.className = 'dep-item';
+                    if (selectedDependencies.has(dep.id)) {
+                        item.classList.add('selected');
+                    }
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `modal_dep_${dep.id}`;
+                    checkbox.value = dep.id;
+                    checkbox.checked = selectedDependencies.has(dep.id);
+                    
+                    checkbox.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedDependencies.add(dep.id);
+                            item.classList.add('selected');
+                        } else {
+                            selectedDependencies.delete(dep.id);
+                            item.classList.remove('selected');
+                        }
+                    });
+                    
+                    const content = document.createElement('div');
+                    content.className = 'dep-item-content';
+                    content.innerHTML = `
+                        <div class="dep-item-name">${dep.name}</div>
+                        <div class="dep-item-desc">${dep.description}</div>
+                    `;
+                    
+                    item.appendChild(checkbox);
+                    item.appendChild(content);
+                    
+                    item.addEventListener('click', (e) => {
+                        if (e.target !== checkbox) {
+                            checkbox.checked = !checkbox.checked;
+                            checkbox.dispatchEvent(new Event('change'));
+                        }
+                    });
+                    
+                    grid.appendChild(item);
+                });
+                
+                section.appendChild(grid);
+                container.appendChild(section);
+            });
+        }
+
+        function updateSelectedDepsDisplay() {
+            const container = document.getElementById('selected-deps');
+            container.innerHTML = '';
+            
+            if (selectedDependencies.size === 0) {
+                container.innerHTML = '<span class="empty-deps">No dependencies selected. Click "+ Add Dependencies" to select.</span>';
+                return;
+            }
+            
+            selectedDependencies.forEach(depId => {
+                const dep = allOptions.dependencies.find(d => d.id === depId);
+                if (dep) {
+                    const tag = document.createElement('div');
+                    tag.className = 'dep-tag';
+                    tag.innerHTML = `
+                        ${dep.name}
+                        <span class="remove" data-dep="${depId}">×</span>
+                    `;
+                    
+                    tag.querySelector('.remove').addEventListener('click', () => {
+                        selectedDependencies.delete(depId);
+                        updateSelectedDepsDisplay();
+                    });
+                    
+                    container.appendChild(tag);
+                }
+            });
+        }
+
+        // Preview Modal
+        document.getElementById('preview-btn').addEventListener('click', () => {
+            generatePreview();
+            document.getElementById('preview-modal').classList.add('active');
+        });
+
+        document.getElementById('close-preview-modal').addEventListener('click', closePreviewModal);
+        document.getElementById('close-preview').addEventListener('click', closePreviewModal);
+        
+        function closePreviewModal() {
+            document.getElementById('preview-modal').classList.remove('active');
+            // Dispose Monaco editor to free resources
+            if (monacoEditor) {
+                monacoEditor.dispose();
+                monacoEditor = null;
+            }
+            // Reset UI
+            document.getElementById('file-content-header').style.display = 'none';
+            document.getElementById('file-content-empty').style.display = 'flex';
+            document.getElementById('editor-container').classList.remove('active');
+        }
+
+        function generatePreview() {
+            const config = getFormConfig();
+            const tree = document.getElementById('file-tree');
+            tree.innerHTML = '';
+            
+            const structure = buildFileStructure(config);
+            renderFileTree(structure, tree, 0);
+        }
+
+        function buildFileStructure(config) {
+            const files = [
+                { name: config.project_name, type: 'folder', children: [
+                    { name: 'main.py', type: 'file' },
+                    { name: 'requirements.txt', type: 'file' },
+                    { name: 'README.md', type: 'file' },
+                    { name: '.gitignore', type: 'file' },
+                    { name: '.env.example', type: 'file' },
+                ]}
+            ];
+            
+            const appFolder = { name: 'app', type: 'folder', children: [
+                { name: '__init__.py', type: 'file' },
+            ]};
+            
+            // Add structure-specific files
+            if (config.structure === 'standard') {
+                appFolder.children.push(
+                    { name: 'api.py', type: 'file' },
+                    { name: 'schemas.py', type: 'file' }
+                );
+            } else if (config.structure === 'modular' || config.structure === 'microservice') {
+                appFolder.children.push(
+                    { name: 'api', type: 'folder', children: [
+                        { name: '__init__.py', type: 'file' },
+                        { name: 'v1', type: 'folder', children: [
+                            { name: '__init__.py', type: 'file' },
+                            { name: 'endpoints.py', type: 'file' },
+                        ]}
+                    ]},
+                    { name: 'core', type: 'folder', children: [
+                        { name: '__init__.py', type: 'file' },
+                        { name: 'config.py', type: 'file' },
+                    ]}
+                );
+            }
+            
+            // Add module files
+            if (config.database !== 'none') {
+                appFolder.children.push({ name: 'database.py', type: 'file' });
+            }
+            
+            if (selectedDependencies.has('sqlalchemy')) {
+                appFolder.children.push({ name: 'models.py', type: 'file' });
+            }
+            
+            if (selectedDependencies.has('jwt') || selectedDependencies.has('oauth2')) {
+                appFolder.children.push({ name: 'auth.py', type: 'file' });
+            }
+            
+            if (selectedDependencies.has('celery')) {
+                appFolder.children.push({ name: 'celery_app.py', type: 'file' });
+            }
+            
+            if (config.include_middleware) {
+                appFolder.children.push({ name: 'middleware.py', type: 'file' });
+            }
+            
+            if (selectedDependencies.has('logging') || config.include_logging) {
+                appFolder.children.push({ name: 'logging_config.py', type: 'file' });
+                files[0].children.push({ name: 'logs', type: 'folder', children: [
+                    { name: '.gitkeep', type: 'file' }
+                ]});
+            }
+            
+            if (selectedDependencies.has('ratelimit')) {
+                appFolder.children.push({ name: 'rate_limiter.py', type: 'file' });
+            }
+            
+            files[0].children.push(appFolder);
+            
+            // Add tests
+            if (config.include_tests) {
+                files[0].children.push({ name: 'tests', type: 'folder', children: [
+                    { name: '__init__.py', type: 'file' },
+                    { name: 'conftest.py', type: 'file' },
+                    { name: 'test_main.py', type: 'file' },
+                ]});
+            }
+            
+            // Add Docker files
+            if (selectedDependencies.has('docker') || config.include_docker) {
+                files[0].children.push(
+                    { name: 'Dockerfile', type: 'file' },
+                    { name: 'docker-compose.yml', type: 'file' },
+                    { name: '.dockerignore', type: 'file' }
+                );
+            }
+            
+            // Add CI/CD
+            if (config.ci_cd === 'github-actions') {
+                files[0].children.push({ name: '.github', type: 'folder', children: [
+                    { name: 'workflows', type: 'folder', children: [
+                        { name: 'ci.yml', type: 'file' }
+                    ]}
+                ]});
+            } else if (config.ci_cd === 'gitlab-ci') {
+                files[0].children.push({ name: '.gitlab-ci.yml', type: 'file' });
+            }
+            
+            // Add pre-commit
+            if (selectedDependencies.has('pre-commit')) {
+                files[0].children.push({ name: '.pre-commit-config.yaml', type: 'file' });
+            }
+            
+            return files;
+        }
+
+        function renderFileTree(items, container, level) {
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'file-tree-item ' + item.type;
+                div.style.paddingLeft = `${level * 20}px`;
+                
+                const iconId = item.type === 'folder' ? 'folder' : 'file';
+                const iconClass = item.type === 'folder' ? 'icon-svg-folder' : 'icon-svg-file';
+                
+                const iconHTML = `<svg class="${iconClass}"><use href="#icon-${iconId}"/></svg>`;
+                
+                div.innerHTML = `${iconHTML} ${item.name}`;
+                
+                // Add click handler for files
+                if (item.type === 'file') {
+                    div.addEventListener('click', () => {
+                        // Remove active class from all file items
+                        document.querySelectorAll('.file-tree-item.file').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        // Add active class to clicked item
+                        div.classList.add('active');
+                        // Display file content
+                        displayFileContent(item);
+                    });
+                }
+                
+                container.appendChild(div);
+                
+                if (item.children) {
+                    renderFileTree(item.children, container, level + 1);
+                }
+            });
+        }
+
+        function displayFileContent(file) {
+            const header = document.getElementById('file-content-header');
+            const empty = document.getElementById('file-content-empty');
+            const editorContainer = document.getElementById('editor-container');
+            const fileName = document.getElementById('current-file-name');
+            
+            // Show header, hide empty message
+            header.style.display = 'flex';
+            empty.style.display = 'none';
+            editorContainer.classList.add('active');
+            
+            // Update header
+            fileName.textContent = file.name;
+            
+            // Generate content based on file type
+            const fileContent = generateFileContent(file);
+            
+            // Determine language from file extension
+            const language = getLanguageFromFileName(file.name);
+            
+            // Create or update Monaco editor
+            if (!monacoEditor) {
+                require(['vs/editor/editor.main'], function() {
+                    monacoEditor = monaco.editor.create(editorContainer, {
+                        value: fileContent,
+                        language: language,
+                        theme: 'vs-dark',
+                        readOnly: true,
+                        minimap: { enabled: true },
+                        scrollBeyondLastLine: false,
+                        fontSize: 13,
+                        lineNumbers: 'on',
+                        renderWhitespace: 'selection',
+                        automaticLayout: true,
+                        folding: true,
+                        lineDecorationsWidth: 10,
+                        lineNumbersMinChars: 3,
+                        glyphMargin: false,
+                        scrollbar: {
+                            verticalScrollbarSize: 10,
+                            horizontalScrollbarSize: 10
+                        }
+                    });
+                });
+            } else {
+                const model = monaco.editor.createModel(fileContent, language);
+                monacoEditor.setModel(model);
+            }
+        }
+
+        function getLanguageFromFileName(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const languageMap = {
+                'py': 'python',
+                'js': 'javascript',
+                'ts': 'typescript',
+                'json': 'json',
+                'md': 'markdown',
+                'yml': 'yaml',
+                'yaml': 'yaml',
+                'txt': 'plaintext',
+                'sh': 'shell',
+                'dockerfile': 'dockerfile',
+                'gitignore': 'plaintext',
+                'env': 'plaintext',
+                'toml': 'toml',
+                'ini': 'ini',
+                'cfg': 'ini',
+                'conf': 'plaintext'
+            };
+            
+            // Special cases
+            if (fileName === 'Dockerfile') return 'dockerfile';
+            if (fileName === '.gitignore') return 'plaintext';
+            if (fileName === '.dockerignore') return 'plaintext';
+            if (fileName.startsWith('.env')) return 'plaintext';
+            if (fileName === 'requirements.txt') return 'plaintext';
+            
+            return languageMap[ext] || 'plaintext';
+        }
+
+        function createLineNumberedCode(code) {
+            const lines = code.split('\n');
+            let html = '<div class="line-numbers">';
+            
+            lines.forEach((line, index) => {
+                html += `
+                    <div class="code-line">
+                        <span class="line-number">${index + 1}</span>
+                        <span class="line-content">${escapeHtml(line) || ' '}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function generateFileContent(file) {
+            const config = getFormConfig();
+            const fileName = file.name;
+            
+            // Main application file
+            if (fileName === 'main.py') {
+                return generateMainPy(config);
+            }
+            
+            // Requirements
+            if (fileName === 'requirements.txt') {
+                return generateRequirements(config);
+            }
+            
+            // README
+            if (fileName === 'README.md') {
+                return generateReadme(config);
+            }
+            
+            // Dockerfile
+            if (fileName === 'Dockerfile') {
+                return generateDockerfile(config);
+            }
+            
+            // Docker Compose
+            if (fileName === 'docker-compose.yml') {
+                return generateDockerCompose(config);
+            }
+            
+            // .env.example
+            if (fileName === '.env.example') {
+                return generateEnvExample(config);
+            }
+            
+            // .gitignore
+            if (fileName === '.gitignore') {
+                return generateGitignore();
+            }
+            
+            // CI/CD files
+            if (fileName === 'ci.yml') {
+                return generateGitHubActions(config);
+            }
+            
+            if (fileName === '.gitlab-ci.yml') {
+                return generateGitLabCI(config);
+            }
+            
+            // Python files
+            if (fileName.endsWith('.py')) {
+                return generatePythonFile(fileName, config);
+            }
+            
+            // YAML files
+            if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
+                return generateYamlFile(fileName, config);
+            }
+            
+            return `# ${fileName}\n\n# This file will be generated with appropriate content`;
+        }
+
+        function generateMainPy(config) {
+            let content = `"""
+${config.description || 'FastAPI Application'}
+Author: ${config.author || 'Unknown'}
+License: ${config.license}
+"""
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+`;
+
+            if (config.include_middleware) {
+                content += `from app.middleware import setup_middleware\n`;
+            }
+            
+            if (config.include_logging) {
+                content += `from app.logging_config import setup_logging\n\nsetup_logging()\n`;
+            }
+
+            content += `
+app = FastAPI(
+    title="${config.project_name}",
+    description="${config.description || 'A FastAPI application'}",
+    version="1.0.0"
+)
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+`;
+
+            if (config.include_middleware) {
+                content += `\n# Setup custom middleware\nsetup_middleware(app)\n`;
+            }
+
+            content += `
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to ${config.project_name}",
+        "status": "running",
+        "version": "1.0.0"
+    }
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+`;
+            return content;
+        }
+
+        function generateRequirements(config) {
+            let deps = [
+                'fastapi>=0.104.0',
+                'uvicorn[standard]>=0.24.0',
+                'pydantic>=2.0.0',
+                'pydantic-settings>=2.0.0'
+            ];
+
+            if (selectedDependencies.has('sqlalchemy')) deps.push('sqlalchemy>=2.0.0');
+            if (selectedDependencies.has('tortoise')) deps.push('tortoise-orm>=0.20.0');
+            if (selectedDependencies.has('alembic')) deps.push('alembic>=1.12.0');
+            if (selectedDependencies.has('jwt')) deps.push('pyjwt>=2.8.0', 'python-jose[cryptography]>=3.3.0');
+            if (selectedDependencies.has('oauth2')) deps.push('python-multipart>=0.0.6', 'passlib[bcrypt]>=1.7.4');
+            if (selectedDependencies.has('celery')) deps.push('celery>=5.3.0');
+            if (selectedDependencies.has('arq')) deps.push('arq>=0.25.0');
+            if (selectedDependencies.has('redis')) deps.push('redis>=5.0.0');
+            if (selectedDependencies.has('graphql')) deps.push('strawberry-graphql[fastapi]>=0.200.0');
+            if (selectedDependencies.has('websocket')) deps.push('websockets>=12.0');
+            if (selectedDependencies.has('logging')) deps.push('loguru>=0.7.0');
+            if (selectedDependencies.has('prometheus')) deps.push('prometheus-client>=0.18.0', 'prometheus-fastapi-instrumentator>=6.1.0');
+            if (selectedDependencies.has('sentry')) deps.push('sentry-sdk[fastapi]>=1.38.0');
+            if (selectedDependencies.has('ratelimit')) deps.push('slowapi>=0.1.9');
+            if (selectedDependencies.has('httpx')) deps.push('httpx>=0.25.0');
+            if (selectedDependencies.has('pytest')) deps.push('pytest>=7.4.0', 'pytest-asyncio>=0.21.0', 'httpx>=0.25.0');
+            if (selectedDependencies.has('pre-commit')) deps.push('pre-commit>=3.5.0');
+
+            if (config.database === 'postgresql') deps.push('psycopg2-binary>=2.9.0');
+            if (config.database === 'mysql') deps.push('pymysql>=1.1.0');
+            if (config.database === 'mongodb') deps.push('motor>=3.3.0');
+
+            return deps.sort().join('\n') + '\n';
+        }
+
+        function generateReadme(config) {
+            return `# ${config.project_name}
+
+${config.description || 'A FastAPI application'}
+
+## Author
+${config.author || 'Unknown'}
+
+## License
+${config.license}
+
+## Features
+
+- ⚡ **FastAPI** - Modern, fast web framework
+- 🔒 **Security** - Built-in authentication and authorization
+${config.include_docker ? '- 🐳 **Docker** - Containerized deployment\n' : ''}${config.include_tests ? '- ✅ **Testing** - Comprehensive test suite with pytest\n' : ''}${config.include_middleware ? '- 🔧 **Middleware** - Request tracking, timing, error handling\n' : ''}${config.include_logging ? '- 📝 **Logging** - Structured logging with Loguru\n' : ''}
+## Quick Start
+
+### Prerequisites
+
+- Python ${config.python_version}+
+${config.include_docker ? '- Docker and Docker Compose (optional)\n' : ''}
+### Installation
+
+1. Clone the repository
+\`\`\`bash
+git clone <repository-url>
+cd ${config.project_name}
+\`\`\`
+
+2. Create virtual environment
+\`\`\`bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\\Scripts\\activate
+\`\`\`
+
+3. Install dependencies
+\`\`\`bash
+pip install -r requirements.txt
+\`\`\`
+
+4. Run the application
+\`\`\`bash
+uvicorn main:app --reload
+\`\`\`
+
+Visit http://localhost:8000/docs for API documentation.
+
+${config.include_docker ? `### Docker Deployment
+
+\`\`\`bash
+docker-compose up -d
+\`\`\`
+` : ''}
+## API Documentation
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## Project Structure
+
+\`\`\`
+${config.project_name}/
+├── app/              # Application code
+├── tests/            # Test suite
+├── main.py           # Application entry point
+└── requirements.txt  # Dependencies
+\`\`\`
+
+## Development
+
+${config.include_tests ? `### Running Tests
+
+\`\`\`bash
+pytest
+\`\`\`
+` : ''}
+### Code Style
+
+This project follows PEP 8 style guidelines.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## Support
+
+For issues and questions, please open an issue on GitHub.
+`;
+        }
+
+        function generateDockerfile(config) {
+            return `FROM python:${config.python_version}-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+`;
+        }
+
+        function generateDockerCompose(config) {
+            let compose = `version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=\${DATABASE_URL}
+    volumes:
+      - .:/app
+    command: uvicorn main:app --host 0.0.0.0 --reload
+`;
+
+            if (config.database === 'postgresql') {
+                compose += `
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${config.project_name}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+`;
+            }
+
+            if (selectedDependencies.has('redis')) {
+                compose += `
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+`;
+            }
+
+            if (config.database === 'postgresql' || selectedDependencies.has('redis')) {
+                compose += `
+volumes:`;
+                if (config.database === 'postgresql') compose += `\n  postgres_data:`;
+            }
+
+            return compose;
+        }
+
+        function generateEnvExample(config) {
+            let env = `# Application
+APP_NAME=${config.project_name}
+ENVIRONMENT=development
+DEBUG=True
+
+# Database
+DATABASE_URL=sqlite:///./app.db
+`;
+
+            if (selectedDependencies.has('jwt')) {
+                env += `\n# Security\nSECRET_KEY=your-secret-key-here\nALGORITHM=HS256\n`;
+            }
+
+            if (selectedDependencies.has('redis')) {
+                env += `\n# Redis\nREDIS_URL=redis://localhost:6379/0\n`;
+            }
+
+            return env;
+        }
+
+        function generateGitignore() {
+            return `# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Docker
+.dockerignore
+`;
+        }
+
+        function generateGitHubActions(config) {
+            return `name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '${config.python_version}'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests
+      run: |
+        pytest
+    
+    - name: Build Docker image
+      run: |
+        docker build -t ${config.project_name}:latest .
+`;
+        }
+
+        function generateGitLabCI(config) {
+            return `stages:
+  - test
+  - build
+
+test:
+  stage: test
+  image: python:${config.python_version}
+  script:
+    - pip install -r requirements.txt
+    - pytest
+  
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t ${config.project_name}:latest .
+`;
+        }
+
+        function generatePythonFile(fileName, config) {
+            if (fileName === '__init__.py') {
+                return '"""Application module"""';
+            }
+            
+            if (fileName === 'database.py') {
+                return `"""Database configuration"""
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///./app.db"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+`;
+            }
+            
+            if (fileName === 'middleware.py') {
+                return `"""Custom middleware"""
+
+from fastapi import Request
+import time
+import uuid
+
+async def request_id_middleware(request: Request, call_next):
+    request.state.request_id = str(uuid.uuid4())
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request.state.request_id
+    return response
+
+async def timing_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+def setup_middleware(app):
+    app.middleware("http")(request_id_middleware)
+    app.middleware("http")(timing_middleware)
+`;
+            }
+
+            return `"""${fileName}"""\n\n# File content will be generated`;
+        }
+
+        function generateYamlFile(fileName, config) {
+            return `# ${fileName}\n# YAML configuration file`;
+        }
+
+        function getFormConfig() {
+            const formData = new FormData(document.getElementById('generator-form'));
+            const template = document.querySelector('input[name="template"]:checked').value;
+            
+            return {
+                project_name: formData.get('project_name') || 'my_project',
+                description: formData.get('description') || 'A FastAPI project',
+                author: formData.get('author') || '',
+                license: formData.get('license'),
+                python_version: formData.get('python_version'),
+                database: formData.get('database'),
+                structure: formData.get('structure'),
+                template: template,
+                ci_cd: formData.get('ci_cd'),
+                dependencies: Array.from(selectedDependencies),
+                include_docker: formData.get('include_docker') === 'on',
+                include_tests: formData.get('include_tests') === 'on',
+                include_middleware: formData.get('include_middleware') === 'on',
+                include_logging: formData.get('include_logging') === 'on',
+            };
+        }
+
+        // Handle form submission
+        document.getElementById('generator-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.style.display = 'none';
+            
+            const config = getFormConfig();
+            
+            // Show loading
+            document.getElementById('generate-btn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(config),
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Generation failed');
+                }
+                
+                // Download the ZIP file
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${config.project_name}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+            } catch (error) {
+                errorDiv.textContent = `Error: ${error.message}`;
+                errorDiv.style.display = 'block';
+            } finally {
+                document.getElementById('generate-btn').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+        
+        // Close modals on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+        
+        // Load options on page load
+        loadOptions();
+    </script>
+</body>
+</html>

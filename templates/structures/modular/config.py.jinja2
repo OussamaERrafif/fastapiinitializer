@@ -1,0 +1,36 @@
+"""
+Application configuration
+"""
+from pydantic_settings import BaseSettings
+from functools import lru_cache
+
+
+class Settings(BaseSettings):
+    """Application settings"""
+    app_name: str = "{{ project_name }}"
+    debug: bool = True
+    host: str = "0.0.0.0"
+    port: int = 8000
+    
+    {% if has_database %}
+    database_url: str
+    {% endif %}
+    
+    {% if has_jwt %}
+    secret_key: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    {% endif %}
+    
+    {% if has_redis %}
+    redis_url: str = "redis://localhost:6379/0"
+    {% endif %}
+    
+    class Config:
+        env_file = ".env"
+
+
+@lru_cache()
+def get_settings():
+    """Get cached settings"""
+    return Settings()

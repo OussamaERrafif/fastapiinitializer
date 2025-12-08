@@ -1,0 +1,58 @@
+"""
+Pydantic schemas for request/response validation
+"""
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from datetime import datetime
+
+
+class ItemBase(BaseModel):
+    """Base item schema"""
+    title: str = Field(..., min_length=1, max_length=100)
+    description: Optional[str] = None
+
+
+class ItemCreate(ItemBase):
+    """Schema for creating an item"""
+    pass
+
+
+class ItemResponse(ItemBase):
+    """Schema for item response"""
+    id: int
+    
+    class Config:
+        from_attributes = True
+
+
+{% if has_jwt %}
+class UserBase(BaseModel):
+    """Base user schema"""
+    username: str = Field(..., min_length=3, max_length=50)
+    email: EmailStr
+
+
+class UserCreate(UserBase):
+    """Schema for creating a user"""
+    password: str = Field(..., min_length=8)
+
+
+class UserResponse(UserBase):
+    """Schema for user response"""
+    id: int
+    is_active: bool = True
+    
+    class Config:
+        from_attributes = True
+
+
+class Token(BaseModel):
+    """Schema for JWT token"""
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    """Schema for token data"""
+    username: Optional[str] = None
+{% endif %}

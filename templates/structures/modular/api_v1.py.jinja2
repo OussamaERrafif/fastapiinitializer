@@ -1,0 +1,29 @@
+"""
+API v1 endpoints
+"""
+from fastapi import APIRouter{% if has_database %}, Depends{% endif %}
+{% if has_database %}from sqlalchemy.orm import Session
+from app.database import get_db{% endif %}
+
+router = APIRouter()
+
+
+@router.get("/health")
+async def health():
+    """Health check endpoint"""
+    return {"status": "healthy", "version": "1.0.0"}
+
+
+@router.get("/items")
+async def get_items({% if has_database %}db: Session = Depends(get_db){% endif %}):
+    """Get all items"""
+    return []
+
+
+@router.post("/items")
+async def create_item(
+    item: dict{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Create a new item"""
+    return item

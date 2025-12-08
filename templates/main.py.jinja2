@@ -1,0 +1,96 @@
+"""
+{{ project_name }} - {{ description }}
+{% if author %}Author: {{ author }}{% endif %}
+{% if license %}License: {{ license }}{% endif %}
+"""
+from fastapi import FastAPI
+{% if has_database %}from app.database import engine, Base{% endif %}
+{% if structure == "standard" %}from app.api import router{% endif %}
+{% if structure == "modular" or structure == "microservice" %}from app.api.v1 import endpoints{% endif %}
+{% if include_middleware %}from app.middleware import setup_middleware{% endif %}
+{% if has_logging %}from app.logging_config import logger{% endif %}
+{% if has_ratelimit %}from app.rate_limiter import setup_rate_limiting{% endif %}
+
+app = FastAPI(
+    title="{{ project_name }}",
+    description="{{ description }}",
+    version="1.0.0",
+    {% if license %}license_info={"name": "{{ license }}"},{% endif %}
+)
+
+{% if include_middleware %}
+# Setup middleware
+setup_middleware(app)
+{% endif %}
+
+{% if has_ratelimit %}
+# Setup rate limiting
+setup_rate_limiting(app)
+{% endif %}
+
+{% if has_database %}
+# Create database tables
+Base.metadata.create_all(bind=engine)
+{% if has_logging %}
+logger.info("Database tables created")
+{% endif %}
+{% endif %}
+
+{% if structure == "standard" %}
+# Include routers
+app.include_router(router, prefix="/api")
+{% endif %}
+
+{% if structure == "modular" or structure == "microservice" %}
+# Include routers
+app.include_router(endpoints.router, prefix="/api/v1", tags=["v1"])
+{% endif %}
+
+@app.on_event("startup")
+async def startup_event():
+    """Startup event handler"""
+    {% if has_logging %}
+    logger.info("Application starting up", version="1.0.0")
+    {% else %}
+    print("Starting {{ project_name }}...")
+    {% endif %}
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Shutdown event handler"""
+    {% if has_logging %}
+    logger.info("Application shutting down")
+    {% else %}
+    print("Shutting down {{ project_name }}...")
+    {% endif %}
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {
+        "message": "Welcome to {{ project_name }}",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "version": "1.0.0"
+    }
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    {% if has_logging %}
+    logger.debug("Health check requested")
+    {% endif %}
+    return {
+        "status": "healthy",
+        "service": "{{ project_name }}",
+        "version": "1.0.0"
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=8000,
+        {% if has_logging %}log_config=None{% endif %}
+    )

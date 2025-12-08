@@ -1,0 +1,190 @@
+# {{ project_name }}
+
+{{ description }}
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python {{ python_version }}+
+- pip
+
+### Installation
+
+1. Clone the repository or extract the ZIP file
+
+2. Create a virtual environment:
+```bash
+python -m venv venv
+```
+
+3. Activate the virtual environment:
+```bash
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+```
+
+4. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+5. Copy `.env.example` to `.env` and configure:
+```bash
+cp .env.example .env
+```
+
+{% if has_database %}
+6. Configure your database connection in `.env`
+{% endif %}
+
+{% if has_docker %}
+### Using Docker
+
+```bash
+docker-compose up --build
+```
+{% endif %}
+
+### Run the application
+
+```bash
+python main.py
+```
+
+Or with uvicorn:
+```bash
+uvicorn main:app --reload
+```
+
+The API will be available at: `http://localhost:8000`
+
+- **API Documentation**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## 📁 Project Structure
+
+```
+{{ project_name }}/
+├── app/
+│   ├── __init__.py
+{% if structure == "standard" %}
+│   ├── api.py          # API routes
+│   └── schemas.py      # Pydantic schemas
+{% elif structure == "modular" %}
+│   ├── api/
+│   │   └── v1/
+│   │       └── endpoints.py
+│   ├── core/
+│   │   └── config.py
+│   └── schemas/
+{% endif %}
+{% if has_database %}
+│   ├── database.py     # Database connection
+{% endif %}
+{% if has_sqlalchemy %}
+│   ├── models.py       # SQLAlchemy models
+{% endif %}
+{% if has_jwt %}
+│   └── auth.py         # Authentication
+{% endif %}
+├── main.py
+├── requirements.txt
+{% if has_docker %}
+├── Dockerfile
+├── docker-compose.yml
+{% endif %}
+{% if include_tests %}
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   └── test_main.py
+{% endif %}
+└── .env.example
+```
+
+## 🔧 Configuration
+
+Edit `.env` file to configure:
+
+{% if has_database %}
+- Database connection
+{% endif %}
+{% if has_jwt %}
+- JWT secret key
+{% endif %}
+{% if has_redis %}
+- Redis connection
+{% endif %}
+
+## 🧪 Testing
+
+{% if has_pytest %}
+Run tests:
+```bash
+pytest
+```
+
+With coverage:
+```bash
+pytest --cov=app tests/
+```
+{% else %}
+Install pytest first:
+```bash
+pip install pytest pytest-asyncio httpx
+```
+
+Then run:
+```bash
+pytest
+```
+{% endif %}
+
+## 📚 Features
+
+{% if has_sqlalchemy %}
+- ✅ SQLAlchemy ORM
+{% endif %}
+{% if has_alembic %}
+- ✅ Alembic migrations
+{% endif %}
+{% if has_jwt %}
+- ✅ JWT authentication
+{% endif %}
+{% if has_celery %}
+- ✅ Celery task queue
+{% endif %}
+{% if has_redis %}
+- ✅ Redis caching
+{% endif %}
+{% if has_docker %}
+- ✅ Docker support
+{% endif %}
+- ✅ Auto-generated API docs
+- ✅ Pydantic validation
+{% if include_tests %}
+- ✅ Test suite included
+{% endif %}
+
+## 📝 API Endpoints
+
+- `GET /` - Root endpoint
+- `GET /health` - Health check
+- `GET /docs` - Swagger UI documentation
+- `GET /redoc` - ReDoc documentation
+
+## 🤝 Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## 📄 License
+
+MIT
+
+---
+
+**Generated with ❤️ by FastAPI Project Generator**

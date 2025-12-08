@@ -1,0 +1,117 @@
+"""
+Microservice API endpoints
+Cloud-native microservice pattern
+"""
+from fastapi import APIRouter, Depends{% if has_database %}, HTTPException{% endif %}
+{% if has_database %}from sqlalchemy.orm import Session
+from app.database import get_db{% endif %}
+{% if has_logging %}from app.logging_config import logger{% endif %}
+{% if has_ratelimit %}from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+{% endif %}
+
+router = APIRouter()
+
+
+{% if has_ratelimit %}@limiter.limit("10/minute"){% endif %}
+@router.get("/health")
+async def health_check():
+    """Service health check"""
+    {% if has_logging %}
+    logger.debug("Health check requested")
+    {% endif %}
+    return {
+        "status": "healthy",
+        "service": "{{ project_name }}",
+        "version": "1.0.0"
+    }
+
+
+@router.get("/ready")
+async def readiness_check({% if has_database %}db: Session = Depends(get_db){% endif %}):
+    """Service readiness check (for k8s)"""
+    {% if has_database %}
+    try:
+        # Check database connection
+        db.execute("SELECT 1")
+        return {"status": "ready"}
+    except Exception as e:
+        {% if has_logging %}
+        logger.error("Readiness check failed", exc_info=e)
+        {% endif %}
+        raise HTTPException(status_code=503, detail="Service not ready")
+    {% else %}
+    return {"status": "ready"}
+    {% endif %}
+
+
+@router.get("/metrics")
+async def get_metrics():
+    """Service metrics endpoint"""
+    {% if has_prometheus %}
+    # Prometheus metrics are auto-exposed at /metrics by instrumentation
+    {% endif %}
+    return {
+        "service": "{{ project_name }}",
+        "metrics_available": {% if has_prometheus %}True{% else %}False{% endif %}
+    }
+
+
+@router.get("/items")
+async def list_items(
+    skip: int = 0,
+    limit: int = 10{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """List all items with pagination"""
+    {% if has_logging %}
+    logger.info("Listing items", skip=skip, limit=limit)
+    {% endif %}
+    
+    {% if has_database %}
+    # TODO: Implement actual database query
+    return []
+    {% else %}
+    return [
+        {"id": i, "title": f"Item {i}"} 
+        for i in range(skip, min(skip + limit, 100))
+    ]
+    {% endif %}
+
+
+@router.get("/items/{item_id}")
+async def get_item(
+    item_id: int{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Get a specific item"""
+    {% if has_logging %}
+    logger.info("Getting item", item_id=item_id)
+    {% endif %}
+    
+    {% if has_database %}
+    # TODO: Implement actual database query
+    raise HTTPException(status_code=404, detail="Item not found")
+    {% else %}
+    return {"id": item_id, "title": f"Item {item_id}"}
+    {% endif %}
+
+
+@router.post("/items")
+async def create_item(
+    item: dict{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Create a new item"""
+    {% if has_logging %}
+    logger.info("Creating item", item=item)
+    {% endif %}
+    
+    {% if has_database %}
+    # TODO: Implement actual database insertion
+    return {"id": 1, **item}
+    {% else %}
+    return {"id": 1, **item}
+    {% endif %}

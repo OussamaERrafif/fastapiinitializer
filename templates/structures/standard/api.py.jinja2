@@ -1,0 +1,62 @@
+"""
+API routes
+"""
+from fastapi import APIRouter{% if has_database %}, Depends{% endif %}
+{% if has_database %}from sqlalchemy.orm import Session
+from app.database import get_db{% endif %}
+from app.schemas import ItemCreate, ItemResponse{% if has_jwt %}, UserCreate, UserResponse, Token{% endif %}
+
+router = APIRouter()
+
+
+@router.get("/items", response_model=list[ItemResponse])
+async def get_items({% if has_database %}db: Session = Depends(get_db){% endif %}):
+    """Get all items"""
+    {% if has_database %}
+    # TODO: Implement database query
+    return []
+    {% else %}
+    return [
+        {"id": 1, "title": "Item 1", "description": "First item"},
+        {"id": 2, "title": "Item 2", "description": "Second item"},
+    ]
+    {% endif %}
+
+
+@router.post("/items", response_model=ItemResponse)
+async def create_item(
+    item: ItemCreate{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Create a new item"""
+    {% if has_database %}
+    # TODO: Implement database insertion
+    return {"id": 1, **item.dict()}
+    {% else %}
+    return {"id": 1, **item.dict()}
+    {% endif %}
+
+
+{% if has_jwt %}
+@router.post("/register", response_model=UserResponse)
+async def register(
+    user: UserCreate{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Register a new user"""
+    # TODO: Implement user registration
+    return {"id": 1, "username": user.username, "email": user.email}
+
+
+@router.post("/token", response_model=Token)
+async def login(
+    username: str,
+    password: str{% if has_database %},
+    db: Session = Depends(get_db){% endif %}
+):
+    """Login and get access token"""
+    # TODO: Implement login logic
+    from app.auth import create_access_token
+    access_token = create_access_token(data={"sub": username})
+    return {"access_token": access_token, "token_type": "bearer"}
+{% endif %}
