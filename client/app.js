@@ -6,15 +6,56 @@ const HISTORY_KEY = 'fastapi_generator_history';
 const BOOKMARKS_KEY = 'fastapi_generator_bookmarks';
 const MAX_HISTORY_ITEMS = 10;
 
+// ── Utilities ─────────────────────────────────────────────────────────────────
+
+function escapeHtml(text) {
+    return text.replace(/[&<>"']/g, m =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])
+    );
+}
+
+// ── Toast notifications ───────────────────────────────────────────────────────
+
+(function createToastContainer() {
+    const el = document.createElement('div');
+    el.className = 'toast-container';
+    el.id = 'toast-container';
+    document.body.appendChild(el);
+})();
+
+function showToast(message, type = 'info', durationMs = 4000) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span>${escapeHtml(message)}</span>
+        <button class="toast-dismiss" aria-label="Dismiss">×</button>
+    `;
+
+    const dismiss = () => {
+        toast.style.animation = 'toastOut 0.2s ease forwards';
+        toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+
+    toast.querySelector('.toast-dismiss').addEventListener('click', dismiss);
+    container.appendChild(toast);
+    setTimeout(dismiss, durationMs);
+}
+
+// ── Options loading ───────────────────────────────────────────────────────────
+
 async function loadOptions() {
     try {
         const response = await fetch('/api/options');
+        if (!response.ok) throw new Error(`Server returned ${response.status}`);
         allOptions = await response.json();
         populateTemplates();
         updateSelectedDepsDisplay();
         initMonaco();
     } catch (error) {
-        console.error('Error loading options:', error);
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = `Failed to load configuration options: ${error.message}. Please refresh the page.`;
+        errorDiv.style.display = 'block';
     }
 }
 
@@ -23,7 +64,7 @@ function initMonaco() {
         paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }
     });
     require(['vs/editor/editor.main'], function() {
-        console.log('Monaco Editor loaded');
+        // Monaco is ready — nothing to log
     });
 }
 
@@ -351,12 +392,6 @@ function getLanguageFromFileName(fileName) {
     return { py: 'python', js: 'javascript', ts: 'typescript', json: 'json',
              md: 'markdown', yml: 'yaml', yaml: 'yaml', sh: 'shell',
              toml: 'toml', ini: 'ini', cfg: 'ini' }[ext] || 'plaintext';
-}
-
-function escapeHtml(text) {
-    return text.replace(/[&<>"']/g, m =>
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])
-    );
 }
 
 function generateFileContent(file) {
@@ -690,7 +725,7 @@ function getHistory() {
 
 function saveHistory(history) {
     try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
-    catch (e) { console.error('Error saving history:', e); }
+    catch (e) { showToast('Could not save history — storage may be full or disabled.', 'warning'); }
 }
 
 function addToHistory(config) {
@@ -708,7 +743,7 @@ function getBookmarks() {
 
 function saveBookmarks(bookmarks) {
     try { localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks)); }
-    catch (e) { console.error('Error saving bookmarks:', e); }
+    catch (e) { showToast('Could not save bookmark — storage may be full or disabled.', 'warning'); }
 }
 
 function addBookmark(name, config) {
