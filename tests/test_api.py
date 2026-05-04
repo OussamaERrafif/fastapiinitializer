@@ -220,6 +220,46 @@ class TestGenerateEndpoint:
         assert response.status_code == 200
 
 
+class TestRedisDatabase:
+    """Test redis as a valid database option (was broken before)."""
+
+    def test_generate_redis_project(self):
+        config = {
+            "project_name": "redis_api",
+            "python_version": "3.11",
+            "database": "redis",
+            "structure": "minimal",
+        }
+        response = client.post("/api/generate", json=config)
+        assert response.status_code == 200
+        assert response.headers["content-type"] == "application/zip"
+
+    def test_redis_in_options(self):
+        response = client.get("/api/options")
+        data = response.json()
+        assert "redis" in data["databases"]
+
+
+class TestDependencyCompatibility:
+    """Test that incompatible dependency combinations are rejected."""
+
+    def test_alembic_without_sqlalchemy_rejected(self):
+        config = {
+            "project_name": "bad_api",
+            "dependencies": ["alembic"],  # alembic without sqlalchemy
+        }
+        response = client.post("/api/generate", json=config)
+        assert response.status_code == 422
+
+    def test_alembic_with_sqlalchemy_accepted(self):
+        config = {
+            "project_name": "good_api",
+            "dependencies": ["sqlalchemy", "alembic"],
+        }
+        response = client.post("/api/generate", json=config)
+        assert response.status_code == 200
+
+
 class TestCORSHeaders:
     """Test CORS configuration"""
     
